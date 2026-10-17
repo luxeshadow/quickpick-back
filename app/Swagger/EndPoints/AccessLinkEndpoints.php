@@ -1,0 +1,14 @@
+<?php
+
+namespace App\Swagger\Endpoints;
+
+use OpenApi\Attributes as OA;
+
+#[OA\Tag(name: 'Access links', description: 'Liens publics des événements')]
+#[OA\Get(path: '/api/events/{event}/access-links', summary: 'Lister les liens d’un événement', security: [['sanctum' => []]], tags: ['Access links'], parameters: [new OA\Parameter(name: 'event', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))], responses: [new OA\Response(response: 200, description: 'Liste des liens'), new OA\Response(response: 403, description: 'Accès refusé')])]
+#[OA\Post(path: '/api/events/{event}/access-links', summary: 'Générer manuellement un lien', security: [['sanctum' => []]], tags: ['Access links'], parameters: [new OA\Parameter(name: 'event', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))], requestBody: new OA\RequestBody(content: new OA\JsonContent(properties: [new OA\Property(property: 'expires_at', type: 'string', format: 'date-time'), new OA\Property(property: 'max_scans', type: 'integer', nullable: true)])), responses: [new OA\Response(response: 201, description: 'Lien généré avec expiration à 30 jours par défaut'), new OA\Response(response: 403, description: 'Accès refusé')])]
+#[OA\Get(path: '/api/access-links/{accessLink}', summary: 'Afficher un lien', security: [['sanctum' => []]], tags: ['Access links'], parameters: [new OA\Parameter(name: 'accessLink', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))], responses: [new OA\Response(response: 200, description: 'Détail du lien'), new OA\Response(response: 403, description: 'Accès refusé')])]
+#[OA\Patch(path: '/api/access-links/{accessLink}', summary: 'Modifier un lien', security: [['sanctum' => []]], tags: ['Access links'], parameters: [new OA\Parameter(name: 'accessLink', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))], responses: [new OA\Response(response: 200, description: 'Lien modifié'), new OA\Response(response: 403, description: 'Accès refusé')])]
+#[OA\Delete(path: '/api/access-links/{accessLink}', summary: 'Supprimer définitivement un lien', security: [['sanctum' => []]], tags: ['Access links'], parameters: [new OA\Parameter(name: 'accessLink', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))], responses: [new OA\Response(response: 200, description: 'Lien supprimé physiquement'), new OA\Response(response: 403, description: 'Accès refusé')])]
+#[OA\Get(path: '/api/public/access-links/{token}', summary: 'Valider publiquement un lien', tags: ['Access links'], parameters: [new OA\Parameter(name: 'token', in: 'path', required: true, schema: new OA\Schema(type: 'string'))], responses: [new OA\Response(response: 200, description: 'Lien valide et informations publiques de l’événement'), new OA\Response(response: 410, description: 'Lien invalide, expiré, désactivé ou épuisé')])]
+class AccessLinkEndpoints {}

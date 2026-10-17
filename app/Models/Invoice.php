@@ -1,0 +1,28 @@
+<?php
+
+namespace App\Models;
+
+use App\Enums\InvoiceStatusEnum;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class Invoice extends Model
+{
+    protected $fillable = [
+        'user_id', 'subscription_id', 'payment_id', 'invoice_number', 'subtotal',
+        'tax', 'total', 'currency', 'status', 'issued_at', 'due_at', 'paid_at',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'subtotal' => 'decimal:2', 'tax' => 'decimal:2', 'total' => 'decimal:2',
+            'status' => InvoiceStatusEnum::class, 'issued_at' => 'datetime',
+            'due_at' => 'datetime', 'paid_at' => 'datetime',
+        ];
+    }
+
+    public function user(): BelongsTo { return $this->belongsTo(User::class); }
+    public function subscription(): BelongsTo { return $this->belongsTo(Subscription::class); }
+    public function payment(): BelongsTo { return $this->belongsTo(Payment::class); }
+}

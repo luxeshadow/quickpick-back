@@ -1,0 +1,10 @@
+.env
+.venv/
+.venv-old-pc-*/
+*.egg-info/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+models/*.onnx
+models/*.bin
+vendor/facex/

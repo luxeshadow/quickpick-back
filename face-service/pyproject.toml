@@ -1,0 +1,25 @@
+[project]
+name = "quickpick-face-service"
+version = "0.1.0"
+description = "Microservice de détection et recherche faciale QuickPick"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+    "fastapi>=0.116,<1.0",
+    "httpx>=0.28,<1.0",
+    "numpy>=2.2,<3.0",
+    "opencv-python-headless>=4.12,<5.0",
+    "pydantic-settings>=2.10,<3.0",
+    "uvicorn[standard]>=0.35,<1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.4,<9.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.setuptools.packages.find]
+include = ["app*"]

@@ -1,0 +1,3047 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Quick Pick API",
+        "description": "Quick Pick backend API",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://127.0.0.1:8000",
+            "description": "Local server"
+        }
+    ],
+    "paths": {
+        "/api/events/{event}/access-links": {
+            "get": {
+                "tags": [
+                    "Access links"
+                ],
+                "summary": "Lister les liens d’un événement",
+                "operationId": "c0642a8a8af3bc8c1e73ef69d10a7852",
+                "parameters": [
+                    {
+                        "name": "event",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Liste des liens"
+                    },
+                    "403": {
+                        "description": "Accès refusé"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Access links"
+                ],
+                "summary": "Générer manuellement un lien",
+                "operationId": "ac51e5325424b6387b0b3df99aaaa91e",
+                "parameters": [
+                    {
+                        "name": "event",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "expires_at": {
+                                        "type": "string",
+                                        "format": "date-time"
+                                    },
+                                    "max_scans": {
+                                        "type": "integer",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Lien généré avec expiration à 30 jours par défaut"
+                    },
+                    "403": {
+                        "description": "Accès refusé"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/access-links/{accessLink}": {
+            "get": {
+                "tags": [
+                    "Access links"
+                ],
+                "summary": "Afficher un lien",
+                "operationId": "ff25049684d4ab204a9920c244d3150c",
+                "parameters": [
+                    {
+                        "name": "accessLink",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Détail du lien"
+                    },
+                    "403": {
+                        "description": "Accès refusé"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Access links"
+                ],
+                "summary": "Supprimer définitivement un lien",
+                "operationId": "a565e41bdf4b1ea6bfadc5843de6f5e9",
+                "parameters": [
+                    {
+                        "name": "accessLink",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lien supprimé physiquement"
+                    },
+                    "403": {
+                        "description": "Accès refusé"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Access links"
+                ],
+                "summary": "Modifier un lien",
+                "operationId": "936c51bdba52af9c571325c9a9c0346a",
+                "parameters": [
+                    {
+                        "name": "accessLink",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lien modifié"
+                    },
+                    "403": {
+                        "description": "Accès refusé"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/public/access-links/{token}": {
+            "get": {
+                "tags": [
+                    "Access links"
+                ],
+                "summary": "Valider publiquement un lien",
+                "operationId": "8da2ff531909c7bd83875feba799bacd",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lien valide et informations publiques de l’événement"
+                    },
+                    "410": {
+                        "description": "Lien invalide, expiré, désactivé ou épuisé"
+                    }
+                }
+            }
+        },
+        "/api/auth/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Register a new user",
+                "operationId": "a9b0e9fbbe7162051f1086380d142bdc",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UserSchema"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User created and OTP sent",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Compte créé. Un code de vérification a été envoyé."
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "format": "email",
+                                            "example": "john@example.com"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/auth/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login with email and password",
+                "operationId": "e3e1332ef2ff28a1a9c0e42704f63f4c",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "john@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "P@ssw0rd123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Credentials verified and OTP sent",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Un code de vérification a été envoyé."
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "format": "email",
+                                            "example": "john@example.com"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/auth/verify-otp": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Verify OTP for register or login",
+                "operationId": "a2b15ddbe25b54cb0f78d7e5dcfbee90",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "otp"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "john@example.com"
+                                    },
+                                    "otp": {
+                                        "type": "string",
+                                        "example": "583921"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OTP verified successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Code vérifié avec succès."
+                                        },
+                                        "user": {
+                                            "type": "object"
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "example": "1|xxxxxxxxxxxxxxxxxxxxxxxx"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/auth/resend-otp": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Renvoyer un nouveau code OTP",
+                "description": "L’ancien code est supprimé et devient immédiatement inutilisable.",
+                "operationId": "f86bff6e20137b5aa1a82b1616bee2ee",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "john@example.com"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Nouveau code envoyé"
+                    },
+                    "422": {
+                        "description": "Adresse e-mail invalide ou inconnue"
+                    },
+                    "429": {
+                        "description": "Trop de demandes"
+                    }
+                }
+            }
+        },
+        "/api/auth/forgot-password": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Envoyer le lien magique de réinitialisation",
+                "operationId": "9c14c20b0ffd400850f9f396f6b99e95",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Lien envoyé par e-mail"
+                    },
+                    "422": {
+                        "description": "Adresse e-mail invalide"
+                    },
+                    "429": {
+                        "description": "Trop de demandes"
+                    }
+                }
+            }
+        },
+        "/api/auth/reset-password": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Enregistrer le nouveau mot de passe",
+                "operationId": "42b47920dac23cc80c42d81a05f75bc0",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "token",
+                                    "password",
+                                    "password_confirmation"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "token": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Mot de passe réinitialisé"
+                    },
+                    "422": {
+                        "description": "Lien invalide, expiré ou mot de passe identique à l’ancien"
+                    },
+                    "429": {
+                        "description": "Trop de demandes"
+                    }
+                }
+            }
+        },
+        "/api/auth/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Déconnecter l’utilisateur",
+                "description": "Supprime uniquement le token utilisé pour cette requête.",
+                "operationId": "fb7b4f3af451402c6433cd589dee3bc6",
+                "responses": {
+                    "200": {
+                        "description": "Déconnexion réussie",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Déconnexion réussie."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Non authentifié"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/auth/login/google": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login with Google",
+                "operationId": "da6fae0e97df55ebfcebe9b1a30661ce",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "token"
+                                ],
+                                "properties": {
+                                    "token": {
+                                        "description": "Google ID token",
+                                        "type": "string",
+                                        "example": "google-id-token-fourni-par-le-client"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Google login successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "user": {
+                                            "type": "object"
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "example": "1|xxxxxxxxxxxxxxxxxxxxxxxx"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid Google token"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/events": {
+            "get": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Lister mes événements",
+                "operationId": "c7c9f80ebe6e9bfc3d15c7672eccae38",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15,
+                            "maximum": 100,
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Liste des événements",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "events": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Event"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Non authentifié"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Créer un événement",
+                "operationId": "4a50eb45b79551552243467e38bd8abf",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Mariage de Marie et Paul",
+                                        "maxLength": 255
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Cérémonie et réception",
+                                        "nullable": true
+                                    },
+                                    "location": {
+                                        "type": "string",
+                                        "example": "Paris",
+                                        "nullable": true,
+                                        "maxLength": 255
+                                    },
+                                    "event_date": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "nullable": true
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "example": "active",
+                                        "enum": [
+                                            "active",
+                                            "inactive"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Événement créé"
+                    },
+                    "401": {
+                        "description": "Non authentifié"
+                    },
+                    "422": {
+                        "description": "Erreur de validation"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/events/options": {
+            "get": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Lister mes événements pour un select",
+                "description": "Retourne uniquement id, name et status, sans pagination.",
+                "operationId": "2b49cf5dca071f9252078300400c81c3",
+                "responses": {
+                    "200": {
+                        "description": "Options des événements"
+                    },
+                    "401": {
+                        "description": "Non authentifié"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/events/status/{status}": {
+            "get": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Lister mes événements par statut",
+                "operationId": "f37382f0fc234390e23ff422738fdd0c",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "active",
+                                "inactive"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15,
+                            "maximum": 100,
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Événements paginés correspondant au statut"
+                    },
+                    "401": {
+                        "description": "Non authentifié"
+                    },
+                    "422": {
+                        "description": "Statut invalide"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/events/search": {
+            "get": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Rechercher dans mes événements par nom",
+                "operationId": "ed69d95811e78200978a0af49324803b",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "mariage"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15,
+                            "maximum": 100,
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Résultats paginés de la recherche"
+                    },
+                    "401": {
+                        "description": "Non authentifié"
+                    },
+                    "422": {
+                        "description": "Recherche invalide"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/events/{event}": {
+            "get": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Afficher un de mes événements",
+                "operationId": "700bf334a275f57bc161985edfcecd85",
+                "parameters": [
+                    {
+                        "name": "event",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Détail de l’événement"
+                    },
+                    "403": {
+                        "description": "Événement appartenant à un autre utilisateur"
+                    },
+                    "404": {
+                        "description": "Événement introuvable"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Archiver un de mes événements (suppression logique)",
+                "operationId": "bb0ee1f7a921b91ce23bb21dd3dbea16",
+                "parameters": [
+                    {
+                        "name": "event",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Événement archivé sans suppression définitive"
+                    },
+                    "403": {
+                        "description": "Accès refusé"
+                    },
+                    "404": {
+                        "description": "Événement introuvable"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Modifier partiellement un de mes événements",
+                "description": "Permet de modifier uniquement le statut, un seul autre champ, ou plusieurs champs.",
+                "operationId": "4119a43ed1a5e1b403711995e588f95f",
+                "parameters": [
+                    {
+                        "name": "event",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Nouveau nom",
+                                        "maxLength": 255
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "location": {
+                                        "type": "string",
+                                        "nullable": true,
+                                        "maxLength": 255
+                                    },
+                                    "event_date": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "nullable": true
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "active",
+                                            "inactive"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Événement mis à jour"
+                    },
+                    "403": {
+                        "description": "Accès refusé"
+                    },
+                    "422": {
+                        "description": "Erreur de validation"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/public/access-links/{token}/guest-scans": {
+            "post": {
+                "tags": [
+                    "Guest scans"
+                ],
+                "summary": "Envoyer un selfie et recevoir les photos correspondantes",
+                "description": "Recherche synchrone. Un seul visage. Selfie non conservé. Chaque tentative admise consomme un scan du lien. Maximum 100 correspondances par défaut.",
+                "operationId": "c603d15cb6c7b98ebb0df69236f599f4",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "pattern": "^[A-Fa-f0-9]{64}$"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "selfie",
+                                    "consent"
+                                ],
+                                "properties": {
+                                    "selfie": {
+                                        "description": "JPEG, PNG ou WebP ; 5 Mo maximum ; 4096 pixels maximum par côté",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "consent": {
+                                        "description": "Consentement explicite à la recherche faciale",
+                                        "type": "string",
+                                        "enum": [
+                                            "1"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Résultats ; media vide si aucune correspondance",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GuestScanResult"
+                                }
+                            }
+                        }
+                    },
+                    "410": {
+                        "description": "Lien invalide, expiré, quota atteint ou abonnement inactif"
+                    },
+                    "422": {
+                        "description": "Image, consentement ou nombre de visages invalide"
+                    },
+                    "429": {
+                        "description": "Maximum 5 requêtes par minute"
+                    },
+                    "503": {
+                        "description": "Microservice, modèles ou recherche Supabase indisponibles"
+                    }
+                }
+            }
+        },
+        "/api/invoices": {
+            "get": {
+                "tags": [
+                    "Invoices"
+                ],
+                "summary": "Lister mes factures",
+                "operationId": "a7e89eb1a4ea886bf1d9a4c349f26d99",
+                "responses": {
+                    "200": {
+                        "description": "Factures enrichies"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/invoices/{invoice}": {
+            "get": {
+                "tags": [
+                    "Invoices"
+                ],
+                "summary": "Afficher une facture prête à imprimer",
+                "operationId": "c14fb8558a03dedcb1299b1a9442e822",
+                "parameters": [
+                    {
+                        "name": "invoice",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Facture avec client, paiement, abonnement et plan"
+                    },
+                    "403": {
+                        "description": "Accès refusé"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/events/{event}/media": {
+            "get": {
+                "tags": [
+                    "Media"
+                ],
+                "summary": "Lister les médias d’un événement",
+                "operationId": "a06793b214678617d7253d661015d2ce",
+                "parameters": [
+                    {
+                        "name": "event",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Filtre facultatif",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "image",
+                                "video"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Liste des médias"
+                    },
+                    "403": {
+                        "description": "Accès refusé"
+                    },
+                    "422": {
+                        "description": "Type invalide"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Media"
+                ],
+                "summary": "Envoyer un lot d’images ou de vidéos",
+                "description": "Chaque appel crée un lot et retourne les noms des fichiers envoyés et échoués. Le lien d’accès reste créé manuellement.",
+                "operationId": "971d017c30ad59259063f21d36dff633",
+                "parameters": [
+                    {
+                        "name": "event",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "files"
+                                ],
+                                "properties": {
+                                    "files": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        },
+                                        "maxItems": 1000
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Tous les médias du lot ont été envoyés"
+                    },
+                    "207": {
+                        "description": "Envoi partiel avec les listes uploaded_files et failed_files"
+                    },
+                    "401": {
+                        "description": "Non authentifié"
+                    },
+                    "403": {
+                        "description": "Événement appartenant à un autre utilisateur"
+                    },
+                    "422": {
+                        "description": "Fichier invalide, abonnement inactif ou quota dépassé"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/payments": {
+            "get": {
+                "tags": [
+                    "Payments"
+                ],
+                "summary": "Lister mes paiements et les filtrer",
+                "operationId": "f9fd861486318c869463e7d31fb43634",
+                "parameters": [
+                    {
+                        "name": "date_from",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "date_to",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Liste filtrée"
+                    },
+                    "422": {
+                        "description": "Filtres invalides"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Payments"
+                ],
+                "summary": "Créer un paiement et sa facture",
+                "operationId": "bc37c45bfed47ef6a192ba97d72b5384",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "subscription_id",
+                                    "provider",
+                                    "payment_method"
+                                ],
+                                "properties": {
+                                    "subscription_id": {
+                                        "type": "integer"
+                                    },
+                                    "provider": {
+                                        "type": "string"
+                                    },
+                                    "payment_method": {
+                                        "type": "string"
+                                    },
+                                    "currency": {
+                                        "type": "string",
+                                        "default": "EUR"
+                                    },
+                                    "external_reference": {
+                                        "type": "string",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Paiement et facture créés"
+                    },
+                    "403": {
+                        "description": "Accès refusé"
+                    },
+                    "422": {
+                        "description": "Erreur métier ou de validation"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/payments/{payment}": {
+            "get": {
+                "tags": [
+                    "Payments"
+                ],
+                "summary": "Afficher un paiement",
+                "operationId": "66e480abb94cfa197e73b2ad7e584a32",
+                "parameters": [
+                    {
+                        "name": "payment",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paiement"
+                    },
+                    "403": {
+                        "description": "Accès refusé"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Payments"
+                ],
+                "summary": "Annuler un paiement non encaissé",
+                "operationId": "e5a1ba90e7b633ebeb570d26679f9ff6",
+                "parameters": [
+                    {
+                        "name": "payment",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paiement annulé"
+                    },
+                    "422": {
+                        "description": "Paiement déjà encaissé"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Payments"
+                ],
+                "summary": "Modifier un paiement (admin)",
+                "operationId": "2f4939118937188ca0a2a4ba04736327",
+                "parameters": [
+                    {
+                        "name": "payment",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paiement modifié"
+                    },
+                    "403": {
+                        "description": "Réservé aux administrateurs"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/public/access-links/{token}/media": {
+            "get": {
+                "tags": [
+                    "Public gallery"
+                ],
+                "summary": "Parcourir les images avec scroll infini",
+                "operationId": "962ed3814ce48e4e15912e2b392d061c",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "cursor",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 30,
+                            "maximum": 50,
+                            "minimum": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Médias et prochain curseur"
+                    },
+                    "410": {
+                        "description": "Lien invalide ou abonnement inactif"
+                    }
+                }
+            }
+        },
+        "/api/public/access-links/{token}/downloads": {
+            "post": {
+                "tags": [
+                    "Public gallery"
+                ],
+                "summary": "Générer les téléchargements de la sélection",
+                "operationId": "59543925a1363d45737f120b7d946ab0",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "media_ids"
+                                ],
+                                "properties": {
+                                    "media_ids": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "maxItems": 100
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "URLs privées valables une heure"
+                    },
+                    "422": {
+                        "description": "Sélection invalide"
+                    }
+                }
+            }
+        },
+        "/api/public/access-links/{token}/deliveries": {
+            "post": {
+                "tags": [
+                    "Public gallery"
+                ],
+                "summary": "Envoyer la sélection par e-mail sans scan facial",
+                "operationId": "aaf73275f8c25409900e6e13a3b9d62f",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "media_ids",
+                                    "channel",
+                                    "recipient"
+                                ],
+                                "properties": {
+                                    "media_ids": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "maxItems": 100
+                                    },
+                                    "channel": {
+                                        "type": "string",
+                                        "enum": [
+                                            "email"
+                                        ]
+                                    },
+                                    "recipient": {
+                                        "type": "string",
+                                        "format": "email"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "202": {
+                        "description": "Livraison programmée"
+                    },
+                    "422": {
+                        "description": "Sélection ou destinataire invalide"
+                    }
+                }
+            }
+        },
+        "/api/subscriptions/current": {
+            "get": {
+                "tags": [
+                    "Subscriptions"
+                ],
+                "summary": "Vérifier mon abonnement actif",
+                "operationId": "91066730c3fc8c77448143e3c04ebe8f",
+                "responses": {
+                    "200": {
+                        "description": "État et abonnement actif éventuel"
+                    },
+                    "401": {
+                        "description": "Non authentifié"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/subscriptions": {
+            "get": {
+                "tags": [
+                    "Subscriptions"
+                ],
+                "summary": "Lister mes abonnements (tous pour un admin)",
+                "operationId": "5b918b08c5adf2b4153ef88b64f6437d",
+                "responses": {
+                    "200": {
+                        "description": "Liste des abonnements"
+                    },
+                    "401": {
+                        "description": "Non authentifié"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Subscriptions"
+                ],
+                "summary": "Souscrire à un plan actif",
+                "operationId": "f15cf4c4ec62ed6ff43acff3e15b7ba7",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "subscription_plan_id"
+                                ],
+                                "properties": {
+                                    "subscription_plan_id": {
+                                        "type": "integer",
+                                        "example": 3
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Abonnement créé"
+                    },
+                    "422": {
+                        "description": "Plan inexistant ou inactif"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/subscriptions/{subscription}": {
+            "get": {
+                "tags": [
+                    "Subscriptions"
+                ],
+                "summary": "Afficher un abonnement autorisé",
+                "operationId": "2e87306d39f7c661de7953d0e47bf064",
+                "parameters": [
+                    {
+                        "name": "subscription",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Détail de l’abonnement"
+                    },
+                    "403": {
+                        "description": "Accès refusé"
+                    },
+                    "404": {
+                        "description": "Abonnement introuvable"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Subscriptions"
+                ],
+                "summary": "Annuler un abonnement sans supprimer son historique",
+                "operationId": "bb36aafcd74bbfd5de21f8dfa369d6f9",
+                "parameters": [
+                    {
+                        "name": "subscription",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Abonnement annulé"
+                    },
+                    "403": {
+                        "description": "Accès refusé"
+                    },
+                    "404": {
+                        "description": "Abonnement introuvable"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Subscriptions"
+                ],
+                "summary": "Modifier le plan ou le statut (admin)",
+                "operationId": "1e573205839f2114403d5ab2326fffc1",
+                "parameters": [
+                    {
+                        "name": "subscription",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "subscription_plan_id": {
+                                        "type": "integer",
+                                        "example": 3
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "active",
+                                            "cancelled",
+                                            "expired"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Abonnement mis à jour"
+                    },
+                    "403": {
+                        "description": "Réservé aux administrateurs"
+                    },
+                    "422": {
+                        "description": "Erreur de validation"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/subscription-plans": {
+            "get": {
+                "tags": [
+                    "Subscription plans"
+                ],
+                "summary": "Lister les plans",
+                "operationId": "71719c2ea8d942b166219f838bc3f5ee",
+                "responses": {
+                    "200": {
+                        "description": "Liste des plans"
+                    },
+                    "401": {
+                        "description": "Non authentifié"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Subscription plans"
+                ],
+                "summary": "Créer un plan (admin)",
+                "operationId": "6c5742bdcc844dbebe1f906acd6dab70",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SubscriptionPlanInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Plan créé"
+                    },
+                    "403": {
+                        "description": "Réservé aux administrateurs"
+                    },
+                    "422": {
+                        "description": "Erreur de validation"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/subscription-plans/{subscription_plan}": {
+            "get": {
+                "tags": [
+                    "Subscription plans"
+                ],
+                "summary": "Afficher un plan",
+                "operationId": "d351fc175599f70da5fee544b62a5c3f",
+                "parameters": [
+                    {
+                        "name": "subscription_plan",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Détail du plan"
+                    },
+                    "404": {
+                        "description": "Plan introuvable"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Subscription plans"
+                ],
+                "summary": "Supprimer un plan (admin)",
+                "operationId": "9b395ad1171d326c426284bf6eac83ea",
+                "parameters": [
+                    {
+                        "name": "subscription_plan",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Plan supprimé"
+                    },
+                    "403": {
+                        "description": "Réservé aux administrateurs"
+                    },
+                    "404": {
+                        "description": "Plan introuvable"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "Subscription plans"
+                ],
+                "summary": "Modifier partiellement un plan (admin)",
+                "operationId": "16c0b912a5a49f8bfdfd915bad044ae7",
+                "parameters": [
+                    {
+                        "name": "subscription_plan",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SubscriptionPlanUpdateInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Plan modifié"
+                    },
+                    "403": {
+                        "description": "Réservé aux administrateurs"
+                    },
+                    "422": {
+                        "description": "Erreur de validation"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/users/me": {
+            "patch": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Modifier mon propre profil",
+                "operationId": "2dba798779ecde0443caeb90c3c8cdb1",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "full_name": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Profil mis à jour",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "user": {
+                                            "$ref": "#/components/schemas/UserProfile"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentification requise"
+                    },
+                    "422": {
+                        "description": "Validation échouée"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/users": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Admin : lister et rechercher les utilisateurs",
+                "operationId": "19396232fc528e21365d111f6fb155da",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Nom ou email, insensible à la casse",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 20,
+                            "maximum": 100,
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Liste paginée, abonnement actif et compteurs",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string"
+                                        },
+                                        "users": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/AdminUser"
+                                            }
+                                        },
+                                        "pagination": {
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer"
+                                                },
+                                                "last_page": {
+                                                    "type": "integer"
+                                                },
+                                                "per_page": {
+                                                    "type": "integer"
+                                                },
+                                                "total": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Admin requis"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/users/search": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Admin : alias de GET /api/users?search=...",
+                "operationId": "073c6ebdab210592e4899fdf250eba7f",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Même réponse paginée que GET /api/users"
+                    },
+                    "403": {
+                        "description": "Admin requis"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/users/{user}": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Admin : détail utilisateur, abonnements, paiements et événements",
+                "operationId": "9c9496d32195d71eb7f4301c83a52a57",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Détail utilisateur",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string"
+                                        },
+                                        "user": {
+                                            "$ref": "#/components/schemas/AdminUser"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Admin requis"
+                    },
+                    "404": {
+                        "description": "Utilisateur introuvable"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Admin : supprimer définitivement un utilisateur",
+                "description": "Suppression Laravel avec cascades et révocation des tokens. Les objets Supabase ne sont pas supprimés.",
+                "operationId": "535905827e9ee9c86c8b977420bdd634",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Utilisateur supprimé",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Utilisateur supprimé avec succès."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Admin requis"
+                    },
+                    "404": {
+                        "description": "Utilisateur introuvable"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "AccessLink": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "event_id": {
+                        "type": "integer"
+                    },
+                    "token": {
+                        "type": "string"
+                    },
+                    "public_url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "source": {
+                        "type": "string",
+                        "enum": [
+                            "automatic",
+                            "manual"
+                        ]
+                    },
+                    "expires_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "is_active": {
+                        "type": "boolean"
+                    },
+                    "max_scans": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "scans_count": {
+                        "type": "integer"
+                    },
+                    "last_used_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "UserProfile": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "full_name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "registered_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "email_verified_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "roles": {
+                        "description": "Présent dans les réponses admin",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "AdminUser": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/UserProfile"
+                    },
+                    {
+                        "properties": {
+                            "current_subscription": {
+                                "description": "Abonnement actif avec subscription_plan, starts_at et ends_at ; null si aucun",
+                                "type": "object",
+                                "nullable": true
+                            },
+                            "statistics": {
+                                "properties": {
+                                    "events": {
+                                        "type": "integer"
+                                    },
+                                    "photos": {
+                                        "type": "integer"
+                                    },
+                                    "videos": {
+                                        "type": "integer"
+                                    },
+                                    "total_media": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            "subscriptions": {
+                                "description": "Détail uniquement : historique avec plans et dates",
+                                "type": "array",
+                                "items": {
+                                    "type": "object"
+                                }
+                            },
+                            "payments": {
+                                "description": "Détail uniquement : montants, devises, états et dates des paiements",
+                                "type": "array",
+                                "items": {
+                                    "type": "object"
+                                }
+                            },
+                            "events": {
+                                "description": "Détail uniquement ; événements non archivés",
+                                "type": "array",
+                                "items": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        },
+                                        "event_date": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "nullable": true
+                                        },
+                                        "photos_count": {
+                                            "type": "integer"
+                                        },
+                                        "videos_count": {
+                                            "type": "integer"
+                                        },
+                                        "total_media": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
+            },
+            "Event": {
+                "required": [
+                    "id",
+                    "user_id",
+                    "name",
+                    "status",
+                    "media_count"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 12
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Mariage de Marie et Paul"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Cérémonie et réception",
+                        "nullable": true
+                    },
+                    "location": {
+                        "type": "string",
+                        "example": "Paris",
+                        "nullable": true
+                    },
+                    "event_date": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "active",
+                        "enum": [
+                            "active",
+                            "inactive"
+                        ]
+                    },
+                    "media_count": {
+                        "type": "integer",
+                        "example": 0
+                    },
+                    "media_status": {
+                        "type": "string",
+                        "enum": [
+                            "empty",
+                            "uploading",
+                            "processing",
+                            "completed",
+                            "partial_failure",
+                            "failed"
+                        ]
+                    },
+                    "expected_media_count": {
+                        "type": "integer",
+                        "example": 100
+                    },
+                    "uploaded_media_count": {
+                        "type": "integer",
+                        "example": 100
+                    },
+                    "processed_media_count": {
+                        "type": "integer",
+                        "example": 98
+                    },
+                    "failed_media_count": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "deleted_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "GuestScanResult": {
+                "required": [
+                    "status",
+                    "scan",
+                    "media"
+                ],
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "scan": {
+                        "required": [
+                            "id",
+                            "status",
+                            "matches_count"
+                        ],
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "status": {
+                                "type": "string",
+                                "enum": [
+                                    "matched",
+                                    "no_match"
+                                ]
+                            },
+                            "matches_count": {
+                                "type": "integer"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "media": {
+                        "type": "array",
+                        "items": {
+                            "required": [
+                                "id",
+                                "filename",
+                                "width",
+                                "height",
+                                "similarity",
+                                "url"
+                            ],
+                            "properties": {
+                                "id": {
+                                    "type": "integer"
+                                },
+                                "filename": {
+                                    "type": "string"
+                                },
+                                "width": {
+                                    "type": "integer",
+                                    "nullable": true
+                                },
+                                "height": {
+                                    "type": "integer",
+                                    "nullable": true
+                                },
+                                "similarity": {
+                                    "description": "Score cosinus, pas une probabilité",
+                                    "type": "number"
+                                },
+                                "url": {
+                                    "description": "URL privée signée, valable une heure",
+                                    "type": "string",
+                                    "format": "uri"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "Invoice": {
+                "description": "Facture enrichie prête à imprimer",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "invoice_number": {
+                        "type": "string",
+                        "example": "INV-20260827-00000001"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "issued",
+                            "paid",
+                            "cancelled"
+                        ]
+                    },
+                    "subtotal": {
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "tax": {
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "total": {
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "currency": {
+                        "type": "string"
+                    },
+                    "client": {
+                        "properties": {
+                            "full_name": {
+                                "type": "string"
+                            },
+                            "email": {
+                                "type": "string",
+                                "format": "email"
+                            },
+                            "phone": {
+                                "type": "string",
+                                "nullable": true
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "payment": {
+                        "$ref": "#/components/schemas/Payment"
+                    },
+                    "subscription": {
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "Media": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "event_id": {
+                        "type": "integer"
+                    },
+                    "media_type": {
+                        "type": "string",
+                        "enum": [
+                            "image",
+                            "video"
+                        ]
+                    },
+                    "storage_path": {
+                        "type": "string"
+                    },
+                    "original_filename": {
+                        "type": "string"
+                    },
+                    "mime_type": {
+                        "type": "string"
+                    },
+                    "file_size": {
+                        "type": "integer"
+                    },
+                    "processing_status": {
+                        "type": "string",
+                        "enum": [
+                            "pending",
+                            "processing",
+                            "processed",
+                            "failed",
+                            "skipped"
+                        ]
+                    },
+                    "faces_count": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "Payment": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "user_id": {
+                        "type": "integer"
+                    },
+                    "subscription_id": {
+                        "type": "integer"
+                    },
+                    "provider": {
+                        "type": "string",
+                        "example": "stripe"
+                    },
+                    "payment_method": {
+                        "type": "string",
+                        "example": "card"
+                    },
+                    "amount": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 29.99
+                    },
+                    "currency": {
+                        "type": "string",
+                        "example": "EUR"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "pending",
+                            "paid",
+                            "failed",
+                            "cancelled",
+                            "refunded"
+                        ]
+                    },
+                    "external_reference": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "paid_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "SubscriptionPlan": {
+                "required": [
+                    "id",
+                    "name",
+                    "price",
+                    "is_active"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Pro"
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "price": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 29.99
+                    },
+                    "duration_days": {
+                        "type": "integer",
+                        "example": 30,
+                        "nullable": true
+                    },
+                    "max_events": {
+                        "type": "integer",
+                        "example": 10,
+                        "nullable": true
+                    },
+                    "max_photos": {
+                        "type": "integer",
+                        "example": 5000,
+                        "nullable": true
+                    },
+                    "accept_video": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "max_videos": {
+                        "type": "integer",
+                        "example": 10,
+                        "nullable": true
+                    },
+                    "is_active": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                },
+                "type": "object"
+            },
+            "SubscriptionPlanInput": {
+                "required": [
+                    "name",
+                    "price"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Pro"
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "price": {
+                        "type": "number",
+                        "format": "float",
+                        "minimum": 0
+                    },
+                    "duration_days": {
+                        "type": "integer",
+                        "nullable": true,
+                        "minimum": 1
+                    },
+                    "max_events": {
+                        "type": "integer",
+                        "nullable": true,
+                        "minimum": 1
+                    },
+                    "max_photos": {
+                        "type": "integer",
+                        "nullable": true,
+                        "minimum": 1
+                    },
+                    "accept_video": {
+                        "type": "boolean",
+                        "default": false
+                    },
+                    "max_videos": {
+                        "type": "integer",
+                        "nullable": true,
+                        "minimum": 1
+                    },
+                    "is_active": {
+                        "type": "boolean",
+                        "default": true
+                    }
+                },
+                "type": "object"
+            },
+            "SubscriptionPlanUpdateInput": {
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "price": {
+                        "type": "number",
+                        "format": "float",
+                        "minimum": 0
+                    },
+                    "duration_days": {
+                        "type": "integer",
+                        "nullable": true,
+                        "minimum": 1
+                    },
+                    "max_events": {
+                        "type": "integer",
+                        "nullable": true,
+                        "minimum": 1
+                    },
+                    "max_photos": {
+                        "type": "integer",
+                        "nullable": true,
+                        "minimum": 1
+                    },
+                    "accept_video": {
+                        "type": "boolean"
+                    },
+                    "max_videos": {
+                        "type": "integer",
+                        "nullable": true,
+                        "minimum": 1
+                    },
+                    "is_active": {
+                        "type": "boolean"
+                    }
+                },
+                "type": "object"
+            },
+            "Subscription": {
+                "required": [
+                    "id",
+                    "user_id",
+                    "subscription_plan_id",
+                    "status",
+                    "starts_at"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 12
+                    },
+                    "subscription_plan_id": {
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "active",
+                        "enum": [
+                            "active",
+                            "cancelled",
+                            "expired"
+                        ]
+                    },
+                    "starts_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-08-27T10:00:00Z"
+                    },
+                    "ends_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-09-26T10:00:00Z",
+                        "nullable": true
+                    },
+                    "cancelled_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "subscription_plan": {
+                        "$ref": "#/components/schemas/SubscriptionPlan"
+                    }
+                },
+                "type": "object"
+            },
+            "UserSchema": {
+                "title": "User",
+                "description": "Quick Pick user",
+                "properties": {
+                    "full_name": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "john@example.com"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "example": "+15145551234",
+                        "nullable": true
+                    },
+                    "password": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "P@ssw0rd123"
+                    },
+                    "password_confirmation": {
+                        "type": "string",
+                        "format": "password",
+                        "example": "P@ssw0rd123"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "sanctum": {
+                "type": "http",
+                "bearerFormat": "Bearer token",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Access links",
+            "description": "Liens publics des événements"
+        },
+        {
+            "name": "Auth",
+            "description": "Authentication management"
+        },
+        {
+            "name": "Events",
+            "description": "Gestion des événements de l’utilisateur connecté"
+        },
+        {
+            "name": "Guest scans",
+            "description": "Recherche des photos à partir d’un selfie"
+        },
+        {
+            "name": "Invoices",
+            "description": "Factures prêtes à afficher ou imprimer"
+        },
+        {
+            "name": "Media",
+            "description": "Envoi et consultation des images et vidéos d’un événement"
+        },
+        {
+            "name": "Payments",
+            "description": "Paiements et génération automatique des factures"
+        },
+        {
+            "name": "Public gallery",
+            "description": "Galerie manuelle publique, indépendante du scan facial"
+        },
+        {
+            "name": "Subscriptions",
+            "description": "Gestion des abonnements"
+        },
+        {
+            "name": "Subscription plans",
+            "description": "Gestion des plans d’abonnement"
+        },
+        {
+            "name": "Users",
+            "description": "Profil propriétaire et gestion administrateur"
+        }
+    ]
+}
