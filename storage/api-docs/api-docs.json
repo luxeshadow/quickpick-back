@@ -2276,6 +2276,51 @@
                     }
                 ]
             }
+        },
+        "/api/users/me/stats": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Mes événements et statistiques avec graphique annuel",
+                "description": "Les totaux sont globaux. La liste contient au maximum les 3 derniers événements par event_date, sinon created_at, sans pagination. year filtre uniquement le graphique. Événements archivés et médias non uploadés exclus.",
+                "operationId": "18cffd2ee6e81f65d0bae70050fdf564",
+                "parameters": [
+                    {
+                        "name": "year",
+                        "in": "query",
+                        "description": "Année du graphique, année courante par défaut",
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 2100,
+                            "minimum": 1900
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Statistiques et données Chart.js",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserStats"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentification requise"
+                    },
+                    "422": {
+                        "description": "Année invalide"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -2985,6 +3030,107 @@
                         "type": "string",
                         "format": "password",
                         "example": "P@ssw0rd123"
+                    }
+                },
+                "type": "object"
+            },
+            "UserStats": {
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "user_id": {
+                        "type": "integer"
+                    },
+                    "statistics": {
+                        "properties": {
+                            "events": {
+                                "type": "integer"
+                            },
+                            "photos": {
+                                "type": "integer"
+                            },
+                            "videos": {
+                                "type": "integer"
+                            },
+                            "total_media": {
+                                "type": "integer"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "events": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer"
+                                },
+                                "name": {
+                                    "type": "string"
+                                },
+                                "event_date": {
+                                    "type": "string",
+                                    "format": "date-time",
+                                    "nullable": true
+                                },
+                                "photos_count": {
+                                    "type": "integer"
+                                },
+                                "videos_count": {
+                                    "type": "integer"
+                                },
+                                "total_media": {
+                                    "type": "integer"
+                                }
+                            },
+                            "type": "object"
+                        },
+                        "maxItems": 3
+                    },
+                    "events_by_month": {
+                        "properties": {
+                            "year": {
+                                "type": "integer"
+                            },
+                            "total": {
+                                "type": "integer"
+                            },
+                            "date_basis": {
+                                "type": "string",
+                                "example": "event_date_or_created_at"
+                            },
+                            "labels": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                },
+                                "maxItems": 12,
+                                "minItems": 12
+                            },
+                            "datasets": {
+                                "type": "array",
+                                "items": {
+                                    "properties": {
+                                        "label": {
+                                            "type": "string",
+                                            "example": "Événements"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "integer"
+                                            },
+                                            "maxItems": 12,
+                                            "minItems": 12
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        },
+                        "type": "object"
                     }
                 },
                 "type": "object"

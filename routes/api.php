@@ -62,6 +62,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('/users/me', [\App\Http\Controllers\User\UserController::class, 'updateProfile']);
     Route::get('/users/search', [\App\Http\Controllers\User\UserController::class, 'index']);
     Route::get('/users', [\App\Http\Controllers\User\UserController::class, 'index']);
+    Route::get('/users/me/stats', \App\Http\Controllers\Stats\UserStatsController::class);
     Route::get('/users/{user}', [\App\Http\Controllers\User\UserController::class, 'show'])->whereNumber('user');
     Route::delete('/users/{user}', [\App\Http\Controllers\User\UserController::class, 'destroy'])->whereNumber('user');
     Route::get('/events/search', [EventController::class, 'search']);

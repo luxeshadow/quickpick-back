@@ -1,5 +1,36 @@
 # Utilisateurs
 
+## Statistiques utilisateur
+
+`GET /api/users/me/stats?year=2026` — utilisateur connecté identifié par son Bearer token, sans rôle admin requis ni identifiant à transmettre. La route avec ID n'existe plus.
+Action : `App\Actions\Stats\UserStatsAction`.
+
+La réponse contient `status`, `user_id`, `statistics` (totaux globaux), `events`
+(les 3 derniers événements avec `photos_count`, `videos_count`, `total_media`),
+et `events_by_month` (`year`, `total`, `date_basis`, `labels`, `datasets`).
+
+Le filtre `year` (1900 à 2100, année courante par défaut) ne filtre que le graphique.
+La liste et ses totaux incluent toutes les années. Les événements archivés et les
+médias non uploadés sont exclus. Le mois est celui de `event_date`, ou de `created_at`
+si la date de l'événement n'est pas renseignée. Les 12 mois sont toujours présents.
+
+Exemple pour Chart.js :
+
+```javascript
+const { events_by_month } = response;
+const chartData = {
+  labels: events_by_month.labels,
+  datasets: events_by_month.datasets,
+};
+```
+
+`events_by_month.total` est le nombre d'événements sur l'année sélectionnée.
+`statistics.events` est le nombre global, toutes années confondues, sans lien avec
+la liste limitée à 3 éléments. Aucun paramètre de pagination. La liste est triée par
+`event_date` (sinon `created_at`) décroissant, puis par identifiant décroissant.
+
+## Gestion des utilisateurs
+
 Toutes les routes nécessitent `Authorization: Bearer TOKEN` et `Accept: application/json`.
 
 - `PATCH /api/users/me` : propriétaire uniquement ; champs partiels `full_name`, `email`, `phone`.
