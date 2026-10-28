@@ -156,7 +156,7 @@ use OpenApi\Attributes as OA;
                     ),
                     new OA\Property(
                         property: 'user',
-                        type: 'object'
+                        ref: '#/components/schemas/AuthUser'
                     ),
                     new OA\Property(
                         property: 'token',
@@ -296,7 +296,7 @@ use OpenApi\Attributes as OA;
                     ),
                     new OA\Property(
                         property: 'user',
-                        type: 'object'
+                        ref: '#/components/schemas/AuthUser'
                     ),
                     new OA\Property(
                         property: 'token',

@@ -377,7 +377,7 @@
                                             "example": "Code vérifié avec succès."
                                         },
                                         "user": {
-                                            "type": "object"
+                                            "$ref": "#/components/schemas/AuthUser"
                                         },
                                         "token": {
                                             "type": "string",
@@ -607,7 +607,7 @@
                                             "example": "success"
                                         },
                                         "user": {
-                                            "type": "object"
+                                            "$ref": "#/components/schemas/AuthUser"
                                         },
                                         "token": {
                                             "type": "string",
@@ -2483,6 +2483,61 @@
                         "type": "object"
                     }
                 ]
+            },
+            "AuthUser": {
+                "description": "Utilisateur après validation OTP ou connexion Google ; mots de passe et remember_token exclus.",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "full_name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "email_verified_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "google_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "apple_id": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "roles": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": [
+                            "photographer"
+                        ]
+                    }
+                },
+                "type": "object"
             },
             "Event": {
                 "required": [

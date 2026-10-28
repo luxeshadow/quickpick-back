@@ -15,7 +15,8 @@ use Illuminate\Support\Facades\DB;
 class LoginUserByGoogleAction
 {
     public function __construct(
-        private readonly ActivateFreeSubscriptionAction $activateFreeSubscription
+        private readonly ActivateFreeSubscriptionAction $activateFreeSubscription,
+        private readonly Client $client,
     ) {
     }
 
@@ -23,10 +24,8 @@ class LoginUserByGoogleAction
     {
         JWT::$leeway = 60;
 
-        $client = new Client();
-
         try {
-            $payload = $client->verifyIdToken($googleToken);
+            $payload = $this->client->verifyIdToken($googleToken);
 
             if (!$payload) {
                 abort(401, 'Token Google invalide.');

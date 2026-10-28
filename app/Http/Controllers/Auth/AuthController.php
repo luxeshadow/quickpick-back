@@ -23,6 +23,7 @@ use App\Actions\Auth\LogoutUserAction;
 use App\Actions\Auth\SendPasswordResetLinkAction;
 use App\Actions\Auth\ResetUserPasswordAction;
 use Illuminate\Http\Request;
+use App\Http\Resources\User\AuthUserResource;
 
 class AuthController extends Controller
 {
@@ -82,7 +83,7 @@ class AuthController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Code vérifié avec succès.',
-            'user' => $result['user'],
+            'user' => new AuthUserResource($result['user']),
             'token' => $result['token'],
         ], 200);
     }
@@ -144,7 +145,7 @@ class AuthController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'user' => $result['user'],
+            'user' => new AuthUserResource($result['user']),
             'token' => $result['token'],
         ], 200);
     }
