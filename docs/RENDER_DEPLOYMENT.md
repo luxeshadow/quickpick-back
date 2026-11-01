@@ -1,5 +1,9 @@
 # Laravel sur Render (Docker)
 
+**Configuration actuelle : service combiné.** Voir `RENDER_COMBINED.md` : le Dockerfile
+racine lance maintenant Laravel, Python, le worker et le scheduler dans un seul
+conteneur. Les instructions de services séparés ci-dessous décrivent l'ancienne option.
+
 Le Dockerfile à la racine construit l'API Laravel seulement. Le frontend et le
 microservice Python sont des services distincts. Aucune clé n'est incluse dans l'image.
 

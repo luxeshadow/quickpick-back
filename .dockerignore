@@ -5,7 +5,12 @@
 auth.json
 vendor
 node_modules
-face-service
+face-service/*
+!face-service/pyproject.toml
+!face-service/README.md
+!face-service/app/
+face-service/**/__pycache__
+face-service/**/*.pyc
 .codex
 .agents
 .idea
