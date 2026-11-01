@@ -17,6 +17,12 @@ from app.vision.yunet import DetectedFace, YuNetDetector
 
 
 logger = logging.getLogger(__name__)
+if not logger.handlers:
+    handler = logging.StreamHandler()
+    handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(message)s'))
+    logger.addHandler(handler)
+logger.setLevel(logging.INFO)
+logger.propagate = False
 STORAGE_EMBEDDING_DIMENSION = 512
 
 
@@ -127,19 +133,33 @@ def _send_callback(
 
 
 def process_photo(command: ProcessPhotoCommand, settings: Settings) -> None:
+    started = time.monotonic()
+    def trace(stage: str) -> None:
+        logger.info('photo_id=%s stage=%s elapsed=%.2fs', command.photo_id, stage, time.monotonic() - started)
+
     try:
+        trace('download_started')
         content = _download_photo(command, settings)
+        trace('download_finished')
         image = cv2.imdecode(np.frombuffer(content, dtype=np.uint8), cv2.IMREAD_COLOR)
         if image is None:
             raise ValueError("Le fichier téléchargé n'est pas une image lisible.")
 
+        trace('detection_started')
         detector = YuNetDetector(settings.yunet_model_path)
-        embedder = SFaceEmbedder(settings.sface_model_path)
         faces = detector.detect(image)
+        logger.info('photo_id=%s detected_faces=%s', command.photo_id, len(faces))
+        trace('embedding_started')
+        embedder = SFaceEmbedder(settings.sface_model_path)
         faces_with_embeddings = [(face, embedder.embed(image, face)) for face in faces]
+        trace('embedding_finished')
+        trace('supabase_write_started')
         _replace_faces(command, settings, faces_with_embeddings)
+        trace('supabase_write_finished')
 
+        trace('callback_started')
         _send_callback(command, settings, "processed", faces_count=len(faces))
+        trace('completed')
     except Exception as exception:
         logger.exception("Échec du traitement de la photo %s", command.photo_id)
         try:
