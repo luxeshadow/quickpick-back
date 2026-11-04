@@ -57,6 +57,23 @@ de requêtes selfie concurrentes en boucle.
 
 ## Vérification locale
 
+## Limitation des pics mémoire
+
+Une seule inférence est admise à la fois, y compris les photos traitées après leur
+réponse HTTP 202. Une autre demande reçoit 503 avant acceptation : les jobs photo
+suivent alors leurs tentatives et backoffs existants, sans retry infini. Un scan
+selfie concurrent reçoit l'erreur temporaire habituelle ; le frontend doit la gérer.
+La détection travaille au maximum sur 1280 pixels de côté (`DETECTION_MAX_SIDE`),
+puis les coordonnées sont remappées sur l'original pour SFace et le stockage.
+Cela peut réduire la détection des très petits visages sur les photos de groupe.
+Les images stockées ne sont pas modifiées. SFace n'est pas chargé s'il n'y a aucun visage.
+Apache est limité à deux processus de requêtes et l'OPcache à 64 Mo.
+Ces limites réduisent les pics ; elles ne garantissent pas que 512 Mo suffisent à
+tous les fichiers et toutes les charges. Aucun rattrapage automatique des photos
+interrompues par un arrêt brutal n'est ajouté.
+
+## Construction locale
+
 ```sh
 docker build -t quickpick-combined .
 docker run --rm -p 10000:10000 --env-file .env quickpick-combined

@@ -150,8 +150,12 @@ def process_photo(command: ProcessPhotoCommand, settings: Settings) -> None:
         faces = detector.detect(image)
         logger.info('photo_id=%s detected_faces=%s', command.photo_id, len(faces))
         trace('embedding_started')
-        embedder = SFaceEmbedder(settings.sface_model_path)
-        faces_with_embeddings = [(face, embedder.embed(image, face)) for face in faces]
+        faces_with_embeddings = []
+        if faces:
+            embedder = SFaceEmbedder(settings.sface_model_path)
+            faces_with_embeddings = [(face, embedder.embed(image, face)) for face in faces]
+            del embedder
+        del detector, image, content
         trace('embedding_finished')
         trace('supabase_write_started')
         _replace_faces(command, settings, faces_with_embeddings)

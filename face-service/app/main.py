@@ -11,6 +11,7 @@ from app.schemas import SearchFacesCommand, SearchFacesResult
 from app.search import search_faces
 from pydantic import ValidationError
 from starlette.concurrency import run_in_threadpool
+from app.workload import inference_lock
 
 
 app = FastAPI(title="QuickPick Face Service", version="0.1.0")
@@ -73,8 +74,17 @@ async def process_photo(
             detail="Les modèles faciaux ne sont pas encore installés ou leurs checksums sont invalides.",
         )
 
-    background_tasks.add_task(process_photo_in_background, command, settings)
+    if not inference_lock.acquire(blocking=False):
+        raise HTTPException(503, 'Un traitement facial est déjà en cours.', headers={'Retry-After': '30'})
+    background_tasks.add_task(process_photo_locked, command, settings)
     return AcceptedJob(job_id=command.job_id)
+
+
+def process_photo_locked(command: ProcessPhotoCommand, settings: Settings) -> None:
+    try:
+        process_photo_in_background(command, settings)
+    finally:
+        inference_lock.release()
 
 
 @app.post('/v1/faces/search', response_model=SearchFacesResult)
@@ -97,4 +107,9 @@ async def search_photo(
         raise HTTPException(409, 'Version du modèle incompatible.')
     if not models_are_ready(settings):
         raise HTTPException(503, 'Les modèles faciaux ne sont pas prêts.')
-    return await run_in_threadpool(search_faces, command, settings)
+    if not inference_lock.acquire(blocking=False):
+        raise HTTPException(503, 'Un traitement facial est déjà en cours.', headers={'Retry-After': '30'})
+    try:
+        return await run_in_threadpool(search_faces, command, settings)
+    finally:
+        inference_lock.release()
